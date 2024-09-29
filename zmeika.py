@@ -24,11 +24,15 @@ class Apple(GameObject):
 
     def randomize_position(self):
         """Задаёт яблоку случайную позицию."""
-        self.position = (random.randint(0, 31) * self.grid_size, random.randint(0, 23) * self.grid_size)
+        self.position = (
+            random.randint(0, 31) * self.grid_size,
+            random.randint(0, 23) * self.grid_size
+        )
     
     def draw(self, surface):
         """Отрисовывает яблоко на экране."""
-        pygame.draw.rect(surface, self.body_color, pygame.Rect(self.position, (self.grid_size, self.grid_size)))
+        pygame.draw.rect(surface, self.body_color, 
+                         pygame.Rect(self.position, (self.grid_size, self.grid_size)))
 
 
 class Snake(GameObject):
@@ -51,7 +55,10 @@ class Snake(GameObject):
     def move(self):
         """Двигает змейку по игровому полю."""
         head_x, head_y = self.positions[0]
-        new_position = (head_x + self.direction[0] * self.grid_size, head_y + self.direction[1] * self.grid_size)
+        new_position = (
+            head_x + self.direction[0] * self.grid_size,
+            head_y + self.direction[1] * self.grid_size
+        )
         
         # Добавляем новую позицию головы
         self.positions = [new_position] + self.positions
@@ -68,7 +75,8 @@ class Snake(GameObject):
     def draw(self, surface):
         """Отрисовывает змейку на экране."""
         for position in self.positions:
-            pygame.draw.rect(surface, self.body_color, pygame.Rect(position, (self.grid_size, self.grid_size)))
+            pygame.draw.rect(surface, self.body_color, 
+                             pygame.Rect(position, (self.grid_size, self.grid_size)))
     
     def get_head_position(self):
         """Возвращает координаты головы змейки."""
@@ -79,6 +87,7 @@ class Snake(GameObject):
         self.length = 1
         self.positions = [(self.grid_size * 16, self.grid_size * 12)]
         self.direction = (1, 0)
+
 
 def main():
     """Главная функция для запуска игры."""
