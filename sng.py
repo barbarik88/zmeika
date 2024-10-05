@@ -1,5 +1,5 @@
 import pygame
-import random  # Оставляем только random.randint
+import random  
 
 
 class GameObject:
@@ -155,3 +155,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
