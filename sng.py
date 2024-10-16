@@ -1,5 +1,5 @@
 import pygame
-import random  # Удалён импорт random.choice, оставляем только random.randint
+import random  # Удаляем 'random.choice', оставляем 'random.randint'
 
 
 class GameObject:
