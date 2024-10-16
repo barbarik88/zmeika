@@ -24,7 +24,7 @@ class Apple(GameObject):
         self.randomize_position()
 
     def randomize_position(self):
-        """Задаёт яблоку случайную позицию."""
+        """Задаёт яблоку случайную позицию на игровом поле."""
         self.position = (
             random.randint(0, 31) * self.grid_size,
             random.randint(0, 23) * self.grid_size
