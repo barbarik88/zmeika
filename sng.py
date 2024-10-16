@@ -1,5 +1,5 @@
 import pygame
-import random  
+import random  # Оставляем только random.randint
 
 
 class GameObject:
