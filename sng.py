@@ -1,5 +1,5 @@
 import pygame
-import random  # Удаляем 'random.choice' и 'random.randint'
+import random  # Используется только random.randint
 
 
 class GameObject:
@@ -94,7 +94,7 @@ class Snake(GameObject):
 
 
 def main():
-    """Главная функция для запуска игры."""
+    """Запускает основной игровой цикл."""
     pygame.init()
     
     # Настройки игры
