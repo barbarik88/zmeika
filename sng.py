@@ -1,5 +1,6 @@
+# pylint: disable=missing-function-docstring
 import pygame
-import random  # Используется только random.randint
+import randomize_position from random  # Используется только random.randint
 
 
 class GameObject:
