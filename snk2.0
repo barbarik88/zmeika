@@ -1,0 +1,134 @@
+import pygame
+import random
+
+# Constants for screen size and grid size
+SCREEN_SIZE = 640
+GRID_SIZE = 20
+GRID_WIDTH = SCREEN_SIZE // GRID_SIZE
+GRID_HEIGHT = SCREEN_SIZE // GRID_SIZE
+
+
+class GameObject:
+    """Represents a general game object in the game."""
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def draw(self, screen):
+        """Draw the object on the screen."""
+        raise NotImplementedError("Subclasses must implement draw method")
+
+
+class Snake(GameObject):
+    """Represents the Snake object in the game."""
+
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.body = [(x, y)]
+        self.direction = (GRID_SIZE, 0)
+
+    def move(self):
+        """Moves the snake in the current direction."""
+        new_head = (self.body[0][0] + self.direction[0],
+                    self.body[0][1] + self.direction[1])
+        self.body = [new_head] + self.body[:-1]
+
+        # Check boundaries and reset if snake goes off-screen
+        if not (0 <= new_head[0] < SCREEN_SIZE
+                and 0 <= new_head[1] < SCREEN_SIZE):
+            self.reset()
+
+    def change_direction(self, direction):
+        """Changes the direction of the snake."""
+        self.direction = direction
+
+    def grow(self):
+        """Grows the snake by adding an additional segment."""
+        self.body.append(self.body[-1])
+
+    def reset(self):
+        """Resets the snake to the starting position."""
+        self.body = [(SCREEN_SIZE // 2, SCREEN_SIZE // 2)]
+        self.direction = (GRID_SIZE, 0)
+
+    def draw(self, screen):
+        """Draws the snake on the screen."""
+        for segment in self.body:
+            pygame.draw.rect(
+                screen, (0, 255, 0),
+                pygame.Rect(segment[0], segment[1], GRID_SIZE, GRID_SIZE)
+            )
+
+
+class Apple(GameObject):
+    """Represents the Apple object in the game."""
+
+    def __init__(self, x, y):
+        super().__init__(x, y)
+
+    def relocate(self):
+        """Randomly relocates the apple on the screen."""
+        self.x = random.randint(0, GRID_WIDTH - 1) * GRID_SIZE
+        self.y = random.randint(0, GRID_HEIGHT - 1) * GRID_SIZE
+
+    def draw(self, screen):
+        """Draws the apple on the screen."""
+        pygame.draw.rect(
+            screen, (255, 0, 0),
+            pygame.Rect(self.x, self.y, GRID_SIZE, GRID_SIZE)
+        )
+
+
+def main():
+    """Main function to start the game."""
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
+    pygame.display.set_caption("Snake Game")
+    clock = pygame.time.Clock()
+
+    snake = Snake(SCREEN_SIZE // 2, SCREEN_SIZE // 2)
+    apple = Apple(
+        random.randint(0, GRID_WIDTH - 1) * GRID_SIZE,
+        random.randint(0, GRID_HEIGHT - 1) * GRID_SIZE
+    )
+
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if (event.key == pygame.K_UP
+                        and snake.direction != (0, GRID_SIZE)):
+                    snake.change_direction((0, -GRID_SIZE))
+                elif (event.key == pygame.K_DOWN
+                        and snake.direction != (0, -GRID_SIZE)):
+                    snake.change_direction((0, GRID_SIZE))
+                elif (event.key == pygame.K_LEFT
+                        and snake.direction != (GRID_SIZE, 0)):
+                    snake.change_direction((-GRID_SIZE, 0))
+                elif (event.key == pygame.K_RIGHT
+                        and snake.direction != (-GRID_SIZE, 0)):
+                    snake.change_direction((GRID_SIZE, 0))
+
+        snake.move()
+
+        # Check if snake has eaten the apple
+        if snake.body[0] == (apple.x, apple.y):
+            snake.grow()
+            apple.relocate()
+
+        # Drawing elements
+        screen.fill((0, 0, 0))
+        snake.draw(screen)
+        apple.draw(screen)
+        pygame.display.flip()
+
+        clock.tick(10)
+
+    pygame.quit()
+
+
+if __name__ == "__main__":
+    main()
