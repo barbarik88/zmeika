@@ -14,6 +14,12 @@ DOWN = (0, GRID_SIZE)
 LEFT = (-GRID_SIZE, 0)
 RIGHT = (GRID_SIZE, 0)
 
+# Global variables (required for tests)
+SCREEN_WIDTH = SCREEN_SIZE
+SCREEN_HEIGHT = SCREEN_SIZE
+screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
+clock = pygame.time.Clock()
+
 
 class GameObject:
     """Represents a general game object in the game."""
@@ -38,6 +44,11 @@ class Snake(GameObject):
         self.body = [self.position]
         self.direction = RIGHT
 
+    @property
+    def positions(self):
+        """Returns the positions of all segments of the snake."""
+        return self.body
+
     def move(self):
         """Moves the snake in the current direction."""
         new_head = (
@@ -52,7 +63,7 @@ class Snake(GameObject):
                 and 0 <= new_head[1] < SCREEN_SIZE):
             self.reset()
 
-    def change_direction(self, direction):
+    def update_direction(self, direction):
         """Changes the direction of the snake."""
         if (direction[0] * -1, direction[1] * -1) != self.direction:
             self.direction = direction
@@ -101,12 +112,23 @@ class Apple(GameObject):
         )
 
 
+def handle_keys(snake):
+    """Handles keyboard input to update snake's direction."""
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_UP]:
+        snake.update_direction(UP)
+    elif keys[pygame.K_DOWN]:
+        snake.update_direction(DOWN)
+    elif keys[pygame.K_LEFT]:
+        snake.update_direction(LEFT)
+    elif keys[pygame.K_RIGHT]:
+        snake.update_direction(RIGHT)
+
+
 def main():
     """Main function to start the game."""
     pygame.init()
-    screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
     pygame.display.set_caption("Snake Game")
-    clock = pygame.time.Clock()
 
     snake = Snake()
     apple = Apple()
@@ -116,16 +138,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    snake.change_direction(UP)
-                elif event.key == pygame.K_DOWN:
-                    snake.change_direction(DOWN)
-                elif event.key == pygame.K_LEFT:
-                    snake.change_direction(LEFT)
-                elif event.key == pygame.K_RIGHT:
-                    snake.change_direction(RIGHT)
 
+        handle_keys(snake)
         snake.move()
 
         # Check if snake has eaten the apple
